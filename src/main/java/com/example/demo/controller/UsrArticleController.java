@@ -57,30 +57,33 @@ public class UsrArticleController {
 	public String showList(Model model) { // 컨트롤러가 화면단으로 저장하고싶을때 모델에 저장
 		List<Article> articles = articleService.getArticles();
 		
-		model.addAttribute("qwe",articles);
+		model.addAttribute("articles",articles);
 		
 		return "usr/article/list";
 	}
 	
 	
-	@GetMapping("/usr/article/showDetail")
-	@ResponseBody
-	public ResultData<Article> showDetail(int id) {
-
-		Article foundArticle = articleService.getArticleById(id);
+	@GetMapping("/usr/article/detail")
+	public String showDetail(HttpSession session, Model model , int id) {
 		
+		int loginedMemberId = -1;
 		
-		if (foundArticle == null) {
-			return ResultData.from("F-1", String.format("%d번 게시물은 존재하지 않습니다", id));
+		if (session.getAttribute("loginedMemberId") != null) {
+			loginedMemberId = (int) session.getAttribute("loginedMemberId");
 		}
-
 		
-		return ResultData.from("S-1", String.format("%d번 게시물 상세보기", id), foundArticle);
-	}
+		
+		
+		Article foundArticle = articleService.getArticleById(id);
 	
+		model.addAttribute("foundArticle",foundArticle);
+		model.addAttribute("loginedMemberId",loginedMemberId);
+		return "usr/article/detail";
+	}
+
 	@GetMapping("/usr/article/doModify")
-	@ResponseBody
-	public ResultData<Article> doModify(HttpSession session, int id, String title, String body) {
+//	@ResponseBody
+	public String doModify(HttpSession session, Model model, int id, String title, String body) {
 		
 		Article foundArticle = articleService.getArticleById(id);
 		int loginedMemberId = -1;
@@ -88,42 +91,45 @@ public class UsrArticleController {
 		if (session.getAttribute("loginedMemberId") != null) {
 			loginedMemberId = (int) session.getAttribute("loginedMemberId");
 		}
+		model.addAttribute("foundArticle",foundArticle);
 		
-		if (loginedMemberId == -1) {
-			return ResultData.from("F-1", "로그인 후 이용할 수 있는 기능입니다");
-		}		
-		if (foundArticle == null) {
-			return ResultData.from("F-1", String.format("%d번 게시물은 존재하지 않습니다", id));
-		}
-		if(loginedMemberId != foundArticle.getMemberId()) {
-			return ResultData.from("F-1", String.format("%d번 게시물은 본인이 작성하지 않았습니다.", id));
-		}
+//		if (loginedMemberId == -1) {
+//			return ResultData.from("F-1", "로그인 후 이용할 수 있는 기능입니다");
+//		}		
+//		if (foundArticle == null) {
+//			return ResultData.from("F-1", String.format("%d번 게시물은 존재하지 않습니다", id));
+//		}
+//		if(loginedMemberId != foundArticle.getMemberId()) {
+//			return ResultData.from("F-1", String.format("%d번 게시물은 본인이 작성하지 않았습니다.", id));
+//		}
+//		ResultData.from("S-1", String.format("%d번 게시물을 수정했습니다", id), articleService.getArticleById(id))
 			articleService.modifyArticle(id, title, body);
-			return ResultData.from("S-1", String.format("%d번 게시물을 수정했습니다", id), articleService.getArticleById(id));
+			return "usr/article/doModify";
 	}
 
 	@GetMapping("/usr/article/doDelete")
 	@ResponseBody
-	public ResultData doDelete(HttpSession session, int id) {
+	public String doDelete(HttpSession session, int id) {
 		
-		Article foundArticle = articleService.getArticleById(id);
-		int loginedMemberId = -1;
+//		Article foundArticle = articleService.getArticleById(id);
+//		int loginedMemberId = -1;
 		
-		if (session.getAttribute("loginedMemberId") != null) {
-			loginedMemberId = (int) session.getAttribute("loginedMemberId");
-		}
+//		if (session.getAttribute("loginedMemberId") != null) {
+//			loginedMemberId = (int) session.getAttribute("loginedMemberId");
+//		}
+//		
+//		if (loginedMemberId == -1) {
+//			return ResultData.from("F-1", "로그인 후 이용할 수 있는 기능입니다");
+//		}
+//		if (foundArticle == null) {
+//			return ResultData.from("F-1", String.format("%d번 게시물은 존재하지 않습니다", id));
+//		}
 		
-		if (loginedMemberId == -1) {
-			return ResultData.from("F-1", "로그인 후 이용할 수 있는 기능입니다");
-		}
-		if (foundArticle == null) {
-			return ResultData.from("F-1", String.format("%d번 게시물은 존재하지 않습니다", id));
-		}
-		if(loginedMemberId != foundArticle.getMemberId()) {
-			return ResultData.from("F-1", String.format("%d번 게시물은 본인이 작성하지 않았습니다.", id));
-		}
+//		if(loginedMemberId != foundArticle.getMemberId()) {
+//			return ResultData.from("F-1", String.format("%d번 게시물은 본인이 작성하지 않았습니다.", id));
+//		}
 			articleService.deleteArticle(id);
-			return ResultData.from("S-1", String.format("%d번 게시물을 삭제했습니다", id));
-		
+			
+			return Util.jsReturn(String.format("%d번 게시물이 삭제되었습니다.", id), "list" );
 	}
 }

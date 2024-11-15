@@ -1,25 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>메인</title>
-</head>
-<body>
-	<h1>메인 페이지</h1>
-	
-	<div>
-	<div><a href="/">로고</a></div>
-	
-	<ul>
-		<li><a href="/usr/home/main">Home</a></li>	
-		<li><a href="/usr/article/list">List</a></li>
-	</ul>
-	</div>
+<%@ taglib uri="jakarta.tags.core" prefix="c"%>
+
+
+<c:set var="pageTitle" value="메인" />	
+<%@ include file="../../common/header.jsp"  %>
 	<section>
-		<div> lorem </div>
-		<div>안녕하세요</div>
+		<div>안녕하세요 김원준님의 홈페이지에 오신것을 환영합니다. 차린건 없습니다. 연습용입니다. 귀여운 고양이나 보고 가세요</div>
 	</section>
-</body>
-</html>
+	<nav class="imgs">
+		<img class="cat relative inset-0 " src="https://www.palnews.co.kr/news/photo/201801/92969_25283_5321.jpg" alt="" />
+	</nav>
+	
+<%@ include file="../../common/footer.jsp"%>
