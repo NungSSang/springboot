@@ -1,14 +1,15 @@
 package com.example.demo.controller;
-
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.dto.Article;
-import com.example.demo.dto.ResultData;
+import com.example.demo.dto.Board;
 import com.example.demo.service.ArticleService;
 import com.example.demo.util.Util;
 
@@ -23,10 +24,14 @@ public class UsrArticleController {
 		this.articleService = articleService;
 	}
 	
-
-	@GetMapping("/usr/article/doWrite")
+	@GetMapping("/usr/article/write")
+	public String write() {
+		return "usr/article/write";
+	}
+	
+	@PostMapping("/usr/article/doWrite")
 	@ResponseBody
-	public ResultData<Article> doWrite(HttpSession session, String title, String body) {
+	public String doWrite(HttpSession session, String title, String body,@RequestParam(defaultValue = "1") int boardId) {
 		
 		int loginedMemberId = -1;
 		
@@ -34,30 +39,38 @@ public class UsrArticleController {
 			loginedMemberId = (int) session.getAttribute("loginedMemberId");
 		}
 		
-		if (loginedMemberId == -1) {
-			return ResultData.from("F-1", "로그인 후 이용할 수 있는 기능입니다");
-		}
-		
-		if (Util.isEmpty(title)) {
-			return ResultData.from("F-2", "제목을 입력해주세요");
-		}
-		
-		if (Util.isEmpty(body)) {
-			return ResultData.from("F-3", "내용을 입력해주세요");
-		}
-		
-		articleService.writeArticle(loginedMemberId, title, body);
+		articleService.writeArticle(loginedMemberId, title, body, boardId);
 		
 		int id = articleService.getLastInsertId();
 		
-		return ResultData.from("S-1", String.format("%d번 게시물을 작성했습니다", id), articleService.getArticleById(id));
+		return Util.jsReturn(String.format("%s번 게시글을 작성했습니다.", articleService.getArticleById(id).getId()), String.format("detail?id=%d",articleService.getArticleById(id).getId()));
 	}
 
 	@GetMapping("/usr/article/list")
-	public String showList(Model model) { // 컨트롤러가 화면단으로 저장하고싶을때 모델에 저장
-		List<Article> articles = articleService.getArticles();
+	public String showList(Model model, int boardId, @RequestParam(defaultValue = "1") int cPage) {
+		Board board = articleService.getBoardById(boardId);
+
+		int limitFrom = (cPage - 1) * 10;
 		
-		model.addAttribute("articles",articles);
+		List<Article> articles = articleService.getArticles(boardId, limitFrom);
+		int articlesCnt = articleService.getArticlesCnt(boardId);
+		
+		int totalPagesCnt = (int) Math.ceil((double) articlesCnt / 10);
+		
+		int from = ((cPage - 1) / 10) * 10 + 1;
+		int end = (((cPage - 1) / 10) + 1) * 10;
+		
+		if (end > totalPagesCnt) {
+			end = totalPagesCnt;
+		}
+		
+		model.addAttribute("board", board);
+		model.addAttribute("articles", articles);
+		model.addAttribute("articlesCnt", articlesCnt);
+		model.addAttribute("totalPagesCnt", totalPagesCnt);
+		model.addAttribute("from", from);
+		model.addAttribute("end", end);
+		model.addAttribute("cPage", cPage);
 		
 		return "usr/article/list";
 	}
@@ -72,39 +85,37 @@ public class UsrArticleController {
 			loginedMemberId = (int) session.getAttribute("loginedMemberId");
 		}
 		
-		
-		
 		Article foundArticle = articleService.getArticleById(id);
 	
 		model.addAttribute("foundArticle",foundArticle);
 		model.addAttribute("loginedMemberId",loginedMemberId);
 		return "usr/article/detail";
 	}
-
-	@GetMapping("/usr/article/doModify")
-//	@ResponseBody
-	public String doModify(HttpSession session, Model model, int id, String title, String body) {
+	@GetMapping("/usr/article/modify")
+	public String modify(Model model, int id) {
 		
 		Article foundArticle = articleService.getArticleById(id);
+		model.getAttribute("foundArticle");
+		model.addAttribute("foundArticle",foundArticle);
+		return "usr/article/modify";
+	}
+	@PostMapping("/usr/article/doModify")
+	@ResponseBody
+	public String doModify(HttpSession session, Model model, int id, String title, String body) {
 		int loginedMemberId = -1;
 		
 		if (session.getAttribute("loginedMemberId") != null) {
 			loginedMemberId = (int) session.getAttribute("loginedMemberId");
 		}
-		model.addAttribute("foundArticle",foundArticle);
 		
-//		if (loginedMemberId == -1) {
-//			return ResultData.from("F-1", "로그인 후 이용할 수 있는 기능입니다");
-//		}		
-//		if (foundArticle == null) {
-//			return ResultData.from("F-1", String.format("%d번 게시물은 존재하지 않습니다", id));
-//		}
-//		if(loginedMemberId != foundArticle.getMemberId()) {
-//			return ResultData.from("F-1", String.format("%d번 게시물은 본인이 작성하지 않았습니다.", id));
-//		}
-//		ResultData.from("S-1", String.format("%d번 게시물을 수정했습니다", id), articleService.getArticleById(id))
-			articleService.modifyArticle(id, title, body);
-			return "usr/article/doModify";
+		Article foundArticle = articleService.getArticleById(id);
+	
+		model.addAttribute("foundArticle",foundArticle);
+		model.addAttribute("loginedMemberId",loginedMemberId);
+		
+		articleService.modifyArticle(id, title, body);
+
+		return Util.jsReturn(String.format("%s번 게시글을 수정했습니다.", articleService.getArticleById(id)), "/");
 	}
 
 	@GetMapping("/usr/article/doDelete")
@@ -132,4 +143,5 @@ public class UsrArticleController {
 			
 			return Util.jsReturn(String.format("%d번 게시물이 삭제되었습니다.", id), "list" );
 	}
+
 }

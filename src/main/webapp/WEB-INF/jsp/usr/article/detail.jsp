@@ -8,7 +8,11 @@
 
 <section>
 	<div>
-		<table>
+		<table class="table table-zebra max-w-md mx-auto">
+			<tr>
+				<th>게시판 이름</th>
+				<td>${foundArticle.getBoardName() }</td>
+			</tr>
 			<tr>
 				<th>번호</th>
 				<td>${foundArticle.getId() }</td>
@@ -18,14 +22,6 @@
 				<td>${foundArticle.getLoginId() }</td>
 			</tr>
 			<tr>
-				<th>제목</th>
-				<td>${foundArticle.getTitle() }</td>
-			</tr>
-			<tr>
-				<th>내용</th>
-				<td>${foundArticle.getBody() }</td>
-			</tr>
-			<tr>
 				<th>작성일</th>
 				<td>${foundArticle.getRegDate().substring(2,16) }</td>
 			</tr>
@@ -33,15 +29,22 @@
 				<th>수정일</th>
 				<td>${foundArticle.getUpdateDate().substring(2,16) }</td>
 			</tr>
+			<tr>
+				<th>제목</th>
+				<td>${foundArticle.getTitle() }</td>
+			</tr>
+			<tr>
+				<th>내용</th>
+				<td>${foundArticle.getBody() }</td>
+			</tr>
+
 		</table>
 	</div>
-	<div class="btn">
-		<button class="back p-2 border-2 border-black bg-yellow-500 my-2 rounded-md" onclick="history.back();">뒤로가기</button>
-		
-		
+	<div class="w-64 mx-auto mt-2 flex justify-between">
+		<button class="btn btn-normal bg-yellow-500" onclick="history.back();">뒤로가기</button>
 		<c:if test="${rq.getLoginedMemberId() == foundArticle.getMemberId() }">
-		<a class="delete p-2 border-2 border-black bg-yellow-500 my-2 rounded-md" href="doModify?id=${foundArticle.getId() }">수정하기</a>
-		<a class="delete p-2 border-2 border-black bg-yellow-500 my-2 rounded-md" onclick="if(confirm('정말 삭제하시겠습니까?') == false) return false;"  href="/usr/article/doDelete?id=${foundArticle.getId() }">삭제</a>
+		<a role="button" class="btn bg-yellow-500" href="/usr/article/modify?id=${foundArticle.getId() }">수정하기</a>
+		<a role="button" class="btn bg-yellow-500" href="/usr/article/modify?id=${foundArticle.getId() }"  onclick="if(confirm('정말 삭제하시겠습니까?') == false) return false;" href="/usr/article/doDelete?id=${foundArticle.getId() }">삭제하기</a>
 		</c:if>
 	</div>
 </section>

@@ -1,12 +1,12 @@
 @charset "UTF-8";
 @font-face {
-   font-family: 'CookieRun-Regular';
-   src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/CookieRun-Regular.woff') format('woff');
-   font-weight: normal;
-   font-style: normal;
+    font-family: 'GangwonEduPowerExtraBoldA';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEduPowerExtraBoldA.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
 }
 html * {
-	font-family: 'CookieRun-Regular';
+	font-family: 'GangwonEduPowerExtraBoldA';
 }
 tr,th,td {
 	border:2px solid black;

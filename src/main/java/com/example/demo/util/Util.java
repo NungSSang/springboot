@@ -26,9 +26,9 @@ public class Util {
 					}
 					const url = '%s'.trim();
 					
-					if (url.length > 0){
+					 if (url.length > 0){
 						location.replace(url);
-					}else {
+					} else{
 						history.back();
 					}
 				</script>
