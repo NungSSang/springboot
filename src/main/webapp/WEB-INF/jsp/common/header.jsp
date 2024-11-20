@@ -32,39 +32,38 @@
 
 		<div class="navbar bg-base-100">
 			<div class="flex-1">
-				<a class="btn btn-ghost text-xl" href="/usr/home/main"><i
-					class="fa-solid fa-house"> Home</i></a>
+				<a class="btn btn-ghost text-xl" href="/usr/home/main"><i class="fa-solid fa-house"> Home</i></a>
 			</div>
 			<div class="flex-none">
 				<ul class="menu menu-horizontal px-1">
-				<c:if test="${rq.getLoginedMemberId() != -1 }">
-				<li><a href="/usr/article/write"><i class="fa-regular fa-pen-to-square"> 글쓰기</i></a></li>
-				</c:if>
-					<li class="link link-hover"><a class="h-full px-3 flex items-center" href="${pageContext.request.contextPath}/usr/article/list?boardId=1&cPage=1"><i class="fa-solid fa-list">공지사항</i></a></li>
-					<li class="link link-hover"><a class="h-full px-3 flex items-center" href="${pageContext.request.contextPath}/usr/article/list?boardId=2&cPage=1"><i class="fa-solid fa-list">자유게시판</i></a></li>
+					<c:if test="${rq.getLoginedMemberId() != -1 }">
+						<li><a href="/usr/article/write"><i class="fa-regular fa-pen-to-square"> 글쓰기</i></a></li>
+					</c:if>
+					<li>
+						<details>
+							<summary><i class="fa-solid fa-list"> 게시판</i></summary>
+							<ul class="bg-base-100 rounded-t-none">
+								<li class="link link-hover -mt-2"><a class="h-full px-3 whitespace-nowrap flex items-center" href="${pageContext.request.contextPath}/usr/article/list?boardId=1&cPage=1">공지사항</a></li>
+								<li class="link link-hover"><a class="h-full px-3 whitespace-nowrap flex items-center" href="${pageContext.request.contextPath}/usr/article/list?boardId=2&cPage=1">자유게시판</a></li>
+							</ul>
+						</details>
+					</li>
 					<c:if test="${rq.getLoginedMemberId() == -1 }">
-						<li class="hover:underline ml-auto mr-25"><a
-							class="h-full px-3"
-							href="${pageContext.request.contextPath }/usr/member/login"><i class="fa-solid fa-person">로그인</i></a></li>
-							
+						<li class="hover:underline ml-auto mr-25"><a class="h-full px-3" href="${pageContext.request.contextPath }/usr/member/join"><i class="fa-solid fa-person"> 회원가입</i></a></li>
+						<li class="hover:underline ml-auto mr-25"><a class="h-full px-3" href="${pageContext.request.contextPath }/usr/member/login"><i class="fa-solid fa-person"> 로그인</i></a></li>
 					</c:if>
 					<c:if test="${rq.getLoginedMemberId() != -1 }">
-						<li class="hover:underline ml-auto mr-25"><a
-							class="h-full px-3"
-							href="${pageContext.request.contextPath }/usr/member/doLogout"><i class="fa-solid fa-person">로그아웃</i></a></li>
+						<li class="hover:underline ml-auto"><a class="h-full px-3" href="${pageContext.request.contextPath }/usr/member/doLogout"><i class="fa-solid fa-person">마이페이지</i></a></li>
+						<li class="hover:underline ml-auto mr-9"><a class="h-full px-3" href="${pageContext.request.contextPath }/usr/member/doLogout"><i class="fa-solid fa-person">로그아웃</i></a></li>
 					</c:if>
-					<li class="mr-28"><details>
-							<summary></summary>
-							<ul class="bg-base-100 rounded-t-none">
-								<li><a>User</a></li>
-								<li><a>lqwkelqw</a></li>
-							</ul>
-						</details></li>
+
 				</ul>
 			</div>
 		</div>
 	</div>
-			<section>
-			<div>
-				<div class="mx-3">${pageTitle }&nbsp;페이지</div>
-		</section>
+	<div>
+		<a href="https://comic.naver.com/index" target="_black">d</a>
+	</div>
+	<section>
+			<div class="mx-3">${pageTitle }&nbsp;페이지</div>
+	</section>

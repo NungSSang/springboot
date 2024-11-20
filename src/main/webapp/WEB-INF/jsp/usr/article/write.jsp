@@ -41,7 +41,7 @@
 								<div class="w-16"></div>
 								<div>
 									<label class="flex items-center">
-										<input class="radio radio-sm" type="radio" name="boardId" value="2" checked />&nbsp;&nbsp;자유
+										<input class="radio radio-sm" type="radio" name="boardId" value="2" checked />&nbsp;&nbsp;자유게시판
 									</label>
 								</div>
 							</div>
@@ -50,7 +50,7 @@
 			<tr>
 			 <th>제목</th>
 				<td>
-			  <input class="h-24" name="title" placeholder="제목을 입력해 주세요"/>
+			  <input class="h-9" name="title" placeholder="제목을 입력해 주세요"/>
 				</td>
 			</tr>
 			<tr>

@@ -2,12 +2,12 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 
-<c:set var="pageTitle" value="게시판 목록" />	
+<c:set var="pageTitle" value="${board.getName() }게시판" />	
 <%@ include file="../../common/header.jsp"%>
 
 <section class="mt-8">
 	<div class="container mx-auto">
-	<div class="w-9/12 mx-auto mb-3 pl-3 text-sm">총${totalPagesCnt }개</div>
+	<div class="w-9/12 ml-auto mr-20 mb-3 pl-3 text-sm">총 : ${articlesCnt }개의 게시글</div>
 	<div class="overflow-x-auto table-box">
 	<table class="table table-lg max-w-4xl mx-auto">
 		<thead>
