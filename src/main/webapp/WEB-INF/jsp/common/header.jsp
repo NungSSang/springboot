@@ -53,7 +53,7 @@
 						<li class="hover:underline ml-auto mr-25"><a class="h-full px-3" href="${pageContext.request.contextPath }/usr/member/login"><i class="fa-solid fa-person"> 로그인</i></a></li>
 					</c:if>
 					<c:if test="${rq.getLoginedMemberId() != -1 }">
-						<li class="hover:underline ml-auto"><a class="h-full px-3" href="${pageContext.request.contextPath }/usr/member/doLogout"><i class="fa-solid fa-person">마이페이지</i></a></li>
+						<li class="hover:underline ml-auto"><a class="h-full px-3" href="${pageContext.request.contextPath }/usr/member/myPage"><i class="fa-solid fa-person">마이페이지</i></a></li>
 						<li class="hover:underline ml-auto mr-9"><a class="h-full px-3" href="${pageContext.request.contextPath }/usr/member/doLogout"><i class="fa-solid fa-person">로그아웃</i></a></li>
 					</c:if>
 

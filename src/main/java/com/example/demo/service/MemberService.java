@@ -29,4 +29,8 @@ public class MemberService {
 	public int getLastInsertId() {
 		return memberDao.getLastInsertId();
 	}
+
+	public void modifyMemberInfo(String loginId, String loginPw, String usrName, int id) {
+		memberDao.getModifyMemberInfo(loginId,loginPw,usrName,id);
+	}
 }

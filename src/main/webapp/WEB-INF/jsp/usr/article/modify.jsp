@@ -7,7 +7,6 @@
 <%@ include file="../../common/header.jsp"%>
 
 <script>
-
 	const ModifyForm_onSubmit = function(form) {
 		form.title.value = form.title.value.trim()
 		form.body.value = form.body.value.trim()
@@ -45,17 +44,17 @@
 			<tr class="mx-auto" >
                 <th>수정할 제목</th>
 				<td>
-			  <input name="title"  value="${foundArticle.getTitle() }"/>
+			  <input name="title" value="${foundArticle.getTitle() }"/>
 				</td>
 			</tr>
 			<tr>
 				<th>수정할 내용</th>
-				<td><textarea name="body" class="textarea textarea-bordered h-36" placeholder="${foundArticle.getBody() }"></textarea></td>
+				<td><textarea name="body" class="textarea textarea-bordered h-36" placeholder="수정할 내용"></textarea></td>
 			</tr>
 			<tr>
 				<td colspan="2"><button class="btn w-full bg-yellow-500">수정하기</button></td>
 			</tr>
-			<tr><td colspan="2"><button class="btn w-full bg-yellow-500" onclick="history.back();">뒤로가기</button></td></tr>
+			<tr><td colspan="2"><button class="btn w-full bg-yellow-500" onclick="history.back(); return false;">뒤로가기</button></td></tr>
 		</table>
 		</form>
 	</div>

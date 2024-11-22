@@ -1,10 +1,13 @@
 package com.example.demo.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.demo.dto.Article;
 import com.example.demo.dto.Member;
 import com.example.demo.dto.ResultData;
 import com.example.demo.dto.Rq;
@@ -12,6 +15,7 @@ import com.example.demo.service.MemberService;
 import com.example.demo.util.Util;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class UsrMemberController {
@@ -21,7 +25,6 @@ public class UsrMemberController {
 	public UsrMemberController(MemberService memberService) {
 		this.memberService = memberService;
 	}
-	
 	@GetMapping("/usr/member/join")
 	public String join() {
 		return  "usr/member/join";
@@ -73,6 +76,44 @@ public class UsrMemberController {
 		
 		return Util.jsReturn(String.format("%s님 환영합니다~", member.getName()), "/");
 	}
+	@GetMapping("/usr/member/myPage")
+	public String myPage(Model model, HttpServletRequest req) {
+		Rq rq = (Rq) req.getAttribute("rq");
+		
+		Member member = memberService.getMemberById(rq.getLoginedMemberId());
+		
+		model.addAttribute("member", member);
+		return "usr/member/myPage";
+	}
+	@GetMapping("/usr/member/checkPassword")
+	public String checkPassword(Model model, int id) {
+		
+		Member member = memberService.getMemberById(id);
+		
+		model.addAttribute("member", member);
+		
+		return "usr/member/checkPassword";
+	}
+	
+	@PostMapping("/usr/member/modifyPassword")
+	public String modifyPassword(Model model, int id) {
+		Member member = memberService.getMemberById(id);
+		model.addAttribute("member", member);
+		return "usr/member/modifyPassword";
+	}
+	
+	@PostMapping("/usr/member/doModifyPassword")
+	@ResponseBody
+	public String doModifyPassword(Model model, String loginId, String loginPw, String name, int id) {
+		
+		Member member = memberService.getMemberById(id);
+		
+		model.addAttribute("member", member);
+		
+		memberService.modifyMemberInfo(loginId, loginPw, name, id);
+
+		return Util.jsReturn(String.format("%s님의 정보를 수정했습니다.", memberService.getMemberById(id).getName()), "/");
+	}
 	
 	@GetMapping("/usr/member/doLogout")
 	@ResponseBody
@@ -83,4 +124,6 @@ public class UsrMemberController {
 		
 		return Util.jsReturn("정상적으로 로그아웃 되었습니다", "/");
 	}
+	
+
 }

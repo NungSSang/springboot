@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.dto.Article;
 import com.example.demo.dto.Board;
+import com.example.demo.dto.Reply;
 import com.example.demo.service.ArticleService;
 import com.example.demo.util.Util;
 
@@ -19,9 +20,11 @@ import jakarta.servlet.http.HttpSession;
 public class UsrArticleController {
 	
 	private ArticleService articleService;
+	private UsrReplyController usrReplyController;
 	
-	public UsrArticleController(ArticleService articleService) {
+	public UsrArticleController(ArticleService articleService, UsrReplyController usrReplyController) {
 		this.articleService = articleService;
+		this.usrReplyController = usrReplyController;
 	}
 	
 	@GetMapping("/usr/article/write")
@@ -48,8 +51,9 @@ public class UsrArticleController {
 
 	@GetMapping("/usr/article/list")
 	public String showList(Model model, int boardId, @RequestParam(defaultValue = "1") int cPage) {
-		Board board = articleService.getBoardById(boardId);
 
+		Board board = articleService.getBoardById(boardId);
+		
 		int limitFrom = (cPage - 1) * 10;
 		
 		List<Article> articles = articleService.getArticles(boardId, limitFrom);
@@ -86,9 +90,10 @@ public class UsrArticleController {
 		}
 		
 		Article foundArticle = articleService.getArticleById(id);
-	
+		List<Reply> replies = usrReplyController.showReplies(foundArticle.getId());
 		model.addAttribute("foundArticle",foundArticle);
 		model.addAttribute("loginedMemberId",loginedMemberId);
+		model.addAttribute("replies",replies);
 		return "usr/article/detail";
 	}
 	@GetMapping("/usr/article/modify")
