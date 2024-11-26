@@ -11,7 +11,6 @@
 	const replyWriteForm_onSubmit = function(form){
 		form.body.value = form.body.value.trim();
 		if(form.body.value.length == 0){
-			console.log("여기2");
 			alert("댓글써줘");
 			form.body.focus();
 			return;
@@ -30,6 +29,10 @@
 			<tr>
 				<th>번호</th>
 				<td>${foundArticle.getId() }</td>
+			</tr>
+			<tr>
+				<th>조회수</th>
+				<td>${foundArticle.getViews() }</td>
 			</tr>
 			<tr>
 				<th>작성자</th>
@@ -61,10 +64,10 @@
 		</c:if>
 	</div>
 	</div>
+	<c:if test="${rq.getLoginedMemberId() == foundArticle.getMemberId() }">
 	<div class="container mx-auto px-4 text-base">
 	<div class="flex justify-center mr-96">댓글</div>
-	
-	<div class="container">
+	<div>
 		<div class="text-lg flex justify-center">
 			<form action="/usr/reply/writereply" method="post" onsubmit="replyWriteForm_onSubmit(this); return false;">
 				<table>
@@ -79,7 +82,6 @@
 				<button class="btn">댓글전송</button>
 			</form>
 		</div>
-	</div>
 	<table class="table table-zebra max-w-md mx-auto mt-3">
 		<thead>
 			<tr>
@@ -99,6 +101,8 @@
 		</c:forEach>
 	</table>
 	</div>
+	</div>
+	</c:if>
 </section>
 
 

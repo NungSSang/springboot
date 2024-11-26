@@ -1,4 +1,5 @@
 package com.example.demo.controller;
+import java.net.http.HttpResponse;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,9 @@ import com.example.demo.dto.Reply;
 import com.example.demo.service.ArticleService;
 import com.example.demo.util.Util;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -50,14 +54,14 @@ public class UsrArticleController {
 	}
 
 	@GetMapping("/usr/article/list")
-	public String showList(Model model, int boardId, @RequestParam(defaultValue = "1") int cPage) {
+	public String showList(Model model, int boardId, @RequestParam(defaultValue = "1") int cPage ,@RequestParam(defaultValue = "title") String searchType,@RequestParam(defaultValue = "") String searchKeyword) {
 
 		Board board = articleService.getBoardById(boardId);
 		
 		int limitFrom = (cPage - 1) * 10;
 		
-		List<Article> articles = articleService.getArticles(boardId, limitFrom);
-		int articlesCnt = articleService.getArticlesCnt(boardId);
+		List<Article> articles = articleService.getArticles(boardId, limitFrom, searchKeyword, searchType);
+		int articlesCnt = articleService.getArticlesCnt(boardId, searchKeyword, searchType);
 		
 		int totalPagesCnt = (int) Math.ceil((double) articlesCnt / 10);
 		
@@ -75,25 +79,40 @@ public class UsrArticleController {
 		model.addAttribute("from", from);
 		model.addAttribute("end", end);
 		model.addAttribute("cPage", cPage);
+		model.addAttribute("searchKeyword", searchKeyword);
+		model.addAttribute("searchType", searchType);
 		
 		return "usr/article/list";
 	}
 	
-	
 	@GetMapping("/usr/article/detail")
-	public String showDetail(HttpSession session, Model model , int id) {
+	public String showDetail(HttpServletRequest req, HttpServletResponse resp , Model model , int id) {
 		
-		int loginedMemberId = -1;
+		Cookie[] cookies = req.getCookies(); 
+		boolean isViewd = false;
 		
-		if (session.getAttribute("loginedMemberId") != null) {
-			loginedMemberId = (int) session.getAttribute("loginedMemberId");
+		if(cookies != null) {
+			for(Cookie cookie : cookies) {
+				if(cookie.getName().equals("viewdArticle_" + id)) {
+					isViewd = true;
+					break;
+				}
+			}
+		}
+		
+		if(isViewd == false) {
+			articleService.increseViews(id);
+			Cookie cookie = new Cookie("viewdArticle_" + id, "true");
+			cookie.setMaxAge(60*60*24);
+			resp.addCookie(cookie);
 		}
 		
 		Article foundArticle = articleService.getArticleById(id);
 		List<Reply> replies = usrReplyController.showReplies(foundArticle.getId());
+		
 		model.addAttribute("foundArticle",foundArticle);
-		model.addAttribute("loginedMemberId",loginedMemberId);
 		model.addAttribute("replies",replies);
+		
 		return "usr/article/detail";
 	}
 	@GetMapping("/usr/article/modify")

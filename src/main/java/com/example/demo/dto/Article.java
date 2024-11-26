@@ -17,4 +17,6 @@ public class Article {
 	private String boardName;
 	private int boardId;
 	private String loginId;
+	
+	private int views;
 }
